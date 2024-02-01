@@ -1,0 +1,86 @@
+:root {
+    --wistful-50: #f3f5fa;
+    --wistful-100: #eaedf5;
+    --wistful-200: #d8dded;
+    --wistful-300: #c1c8e0;
+    --wistful-400: #a0a7cf;
+    --wistful-500: #9094c4;
+    --wistful-600: #7978b3;
+    --wistful-700: #67669c;
+    --wistful-800: #55547f;
+    --wistful-900: #484967;
+    --wistful-950: #2a2a3c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+#main {
+    background: linear-gradient(var(--wistful-300), var(--wistful-600));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    grid-template-rows: repeat(3, minmax(150px, 1fr));
+    
+    border: 5px solid var(--wistful-800);
+}
+
+.cell {
+    border: 5px solid var(--wistful-800);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--wistful-200);
+}
+
+.cell[data-active-sign="X"]:hover,
+.cell[data-active-sign="O"]:hover {
+    filter: brightness(.5);
+    transform: scale(1.05);
+}
+
+@keyframes myAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.cell[data-active-sign="X"]:hover::after,
+.cell[data-active-sign="O"]:hover::after {
+    content: 'X';
+    color: rgba(158, 41, 41, 0.438);
+    animation-name: myAnimation;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+.cell[data-active-sign="O"]:hover::after {
+    content: 'O';
+}

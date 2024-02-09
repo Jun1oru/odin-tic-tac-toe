@@ -8,15 +8,23 @@
 </head>
 <body>
     <div id="main">
-        <div id="board" class="notStarted">
-            
+        <div id="gameMenu" class="hidden">
+            <h1 id="liveMessage">You win!</h1>
+            <div id="board">
+
+            </div>
+            <input type="button" value="Restart" id="restartButton"/>
         </div>
         <div id="menu">
             <h1>Welcome to Tic Tac Toe!</h1>
             <form id="form-menu">
-                <input type="text" placeholder="Player One" id="test"/>
-                <input type="text" placeholder="Player Two" id="test2"/>
-                <input type="submit" value="Play!" id="test3"/>
+                <div>
+                    <input type="text" placeholder="Player One" 
+                    pattern="[A-Za-z]+" id="playerOneName" required/>
+                    <input type="text" placeholder="Player Two"
+                    pattern="[A-Za-z]+" id="playerTwoName" required/>
+                </div>
+                <input type="submit" value="Play!" />
             </form>
         </div>
     </div>

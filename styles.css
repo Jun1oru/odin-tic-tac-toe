@@ -34,17 +34,75 @@ body {
     justify-content: center;
 }
 
+#gameMenu {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    row-gap: 25px;
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameMenu input[type="button"] {
+    border: none;
+    width: 150px;
+    height: 50px;
+    border-radius: 15px;
+    justify-self: center;
+}
+
+#gameMenu input[type="button"]:hover {
+    filter: brightness(.9);
+    transform: scale(1.05);
+}
+
 #menu {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 150px 1fr;
+    text-align: center;
 }
 
-/*#form-menu {
+#form-menu {
     display: grid;
     gap: 25px;
-    grid-template-columns: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+}
+
+#form-menu > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+}
+
+#form-menu input[type="text"] {
+    border: none;
+    width: 200px;
+    height: 25px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+#form-menu input[type="text"]:focus {
+    border: 2px solid rgb(58, 50, 50);
+}
+
+#form-menu input[type="text"]:required, #form-menu input[type="text"]:invalid {
+    border: 2px solid rgb(180, 39, 39);
+}
+
+#form-menu input[type="text"]:valid {
+    border: 2px solid rgb(78, 153, 75);
+}
+
+#form-menu input[type="text"]:hover {
+    filter: brightness(.9);
 }
 
 #form-menu input[type="submit"] {
@@ -52,27 +110,12 @@ body {
     width: 150px;
     height: 50px;
     border-radius: 15px;
-    
-}*/
-
-#form-menu {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 5%;
+    justify-self: center;
 }
 
-#test {
-    order: 1;
-}
-
-#test2 {
-    order: 2;
-}
-
-#test3 {
-    order: 3;
+#form-menu input[type="submit"]:hover {
+    filter: brightness(.9);
+    transform: scale(1.05);
 }
 
 #board {
@@ -83,7 +126,7 @@ body {
     border: 5px solid var(--wistful-800);
 }
 
-.notStarted {
+.hidden {
     display: none !important;
 }
 

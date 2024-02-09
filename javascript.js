@@ -95,8 +95,7 @@ const gameController = (() => {
             if(checkRound.win()) {
                 console.log(`${activePlayer.getName()} (${activePlayer.getSign()}) won!!!`);
                 gameBoard.printBoard();
-                gameController.resetGame();
-                newRound();
+                displayController.setLiveMessage(`${activePlayer.getName()} (${activePlayer.getSign()}) won!!!`);
             } else if(checkRound.tie()) {
                 console.log("It's a tie!");
                 gameBoard.printBoard();
@@ -107,6 +106,7 @@ const gameController = (() => {
                 newRound();
             }
             displayController.updateBoard();
+            displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
         }
     };
 
@@ -192,12 +192,14 @@ const gameController = (() => {
         gameBoard.resetBoard();
     };
 
-    newRound();
+    //newRound();
 
-    return { playRound, resetGame, getActivePlayer };
+    return { playRound, resetGame, getActivePlayer, playerOne, playerTwo, newRound };
 })();
 
 const displayController = (() => {
+    const liveMessage = document.getElementById('liveMessage');
+    const restartButton = document.getElementById('restart')
     const boardElement = document.getElementById('board');
     let boardCells = [];
 
@@ -240,6 +242,9 @@ const displayController = (() => {
         }
     };
 
+    const setLiveMessage = (msg) => liveMessage.innerText = msg;
+    const getLiveMessage = () => liveMessage;
+
     /*const updateBoard = () => {
         for(let i = 0; i < boardCells.length; i++) {
             const spanCell = boardCells[i].querySelector('span');
@@ -252,7 +257,28 @@ const displayController = (() => {
         }
     };*/
 
-    return { createBoard, updateBoard };
+    return { createBoard, updateBoard, setLiveMessage, getLiveMessage };
 })();
 
-//displayController.createBoard();
+const menuController = (() => {
+    const gameMenu = document.getElementById("gameMenu");
+    const menu = document.getElementById("menu");
+
+    const formMenu = document.getElementById("form-menu");
+    const playerOneInput = document.getElementById("playerOneName");
+    const playerTwoInput = document.getElementById("playerTwoName");
+
+    formMenu.addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        gameController.playerOne.setName(playerOneInput.value); 
+        gameController.playerTwo.setName(playerTwoInput.value);
+        gameController.newRound();
+
+        displayController.createBoard();
+        displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
+
+        gameMenu.classList.remove("hidden");
+        menu.classList.add("hidden");
+    });
+})();

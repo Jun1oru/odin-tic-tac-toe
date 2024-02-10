@@ -16,6 +16,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
@@ -43,6 +44,13 @@ body {
     text-align: center;
     justify-content: center;
     align-items: center;
+}
+
+#gameButtons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
 }
 
 #gameMenu input[type="button"] {

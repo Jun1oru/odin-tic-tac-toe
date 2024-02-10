@@ -87,6 +87,9 @@ const gameController = (() => {
             console.log("Can't play in that position!");
             console.log(`${activePlayer.getName()}'s turn...`);
         }
+        else if(checkRound.getGameWon() === true || checkRound.tie() === true) {
+            return 0;
+        }
         else {
             gameBoard.setBoardCellValue(i, j, activePlayer.getSign());
             console.log(`${activePlayer.getName()} plays ${activePlayer.getSign()} in position 
@@ -99,14 +102,13 @@ const gameController = (() => {
             } else if(checkRound.tie()) {
                 console.log("It's a tie!");
                 gameBoard.printBoard();
-                gameController.resetGame();
-                newRound();
+                displayController.setLiveMessage("It's a tie!");
             } else {
                 switchPlayerTurn();
                 newRound();
+                displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
             }
             displayController.updateBoard();
-            displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
         }
     };
 
@@ -198,8 +200,11 @@ const gameController = (() => {
 })();
 
 const displayController = (() => {
+    const gameMenu = document.getElementById("gameMenu");
+    const menu = document.getElementById("menu");
     const liveMessage = document.getElementById('liveMessage');
-    const restartButton = document.getElementById('restart')
+    const restartButton = document.getElementById('restartButton');
+    const menuButton = document.getElementById('menuButton');
     const boardElement = document.getElementById('board');
     let boardCells = [];
 
@@ -242,22 +247,41 @@ const displayController = (() => {
         }
     };
 
+    const destroyBoard = () => {
+        while(boardCells[0]) {
+            boardCells[0].remove();
+        }
+        /*const board = document.getElementById("board");
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell, cellIndex) => {
+                board.removeChild(board.firstChild);
+            })
+        })*/
+    };
+
     const setLiveMessage = (msg) => liveMessage.innerText = msg;
     const getLiveMessage = () => liveMessage;
 
-    /*const updateBoard = () => {
-        for(let i = 0; i < boardCells.length; i++) {
-            const spanCell = boardCells[i].querySelector('span');
-            if(spanCell.textContent === "") {
-                boardCells[i].dataset.activeSign = `${gameController.getActivePlayer().getSign()}`;
-                console.log(gameController.getActivePlayer().getSign());
-            } else {
-                boardCells[i].dataset.activeSign = '';
-            }
-        }
-    };*/
+    restartButton.addEventListener('click', (event) => {
+        event.preventDefault();
 
-    return { createBoard, updateBoard, setLiveMessage, getLiveMessage };
+        gameController.resetGame();
+        gameController.newRound();
+        displayController.updateBoard();
+        displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
+    });
+
+    menuButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        gameController.resetGame();
+        displayController.destroyBoard();
+
+        gameMenu.classList.add("hidden");
+        menu.classList.remove("hidden");
+    });
+
+    return { createBoard, updateBoard, destroyBoard, setLiveMessage, getLiveMessage };
 })();
 
 const menuController = (() => {

@@ -99,16 +99,23 @@ const gameController = (() => {
                 console.log(`${activePlayer.getName()} (${activePlayer.getSign()}) won!!!`);
                 gameBoard.printBoard();
                 displayController.setLiveMessage(`${activePlayer.getName()} (${activePlayer.getSign()}) won!!!`);
+                displayController.updateBoard();
+                let boardCells = displayController.getBoardCells();
+                for(let i = 0; i < boardCells.length; i++) {
+                    boardCells[i].dataset.activeSign = "";
+                    boardCells[i].style.color = "red";
+                }
             } else if(checkRound.tie()) {
                 console.log("It's a tie!");
                 gameBoard.printBoard();
                 displayController.setLiveMessage("It's a tie!");
+                displayController.updateBoard();
             } else {
                 switchPlayerTurn();
                 newRound();
                 displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
+                displayController.updateBoard();
             }
-            displayController.updateBoard();
         }
     };
 
@@ -149,19 +156,27 @@ const gameController = (() => {
 
         const win = () => {
             if(!gameWon) {
-                if(checkDiag(1) || checkDiag(2)) {
+                if(checkDiag(1)) {
                     activePlayer.setWinnerState(true);
                     gameWon = true;
+                    displayController.winnerCells("diag", 1);
+                }
+                else if(checkDiag(2)) {
+                    activePlayer.setWinnerState(true);
+                    gameWon = true;
+                    displayController.winnerCells("diag", 2);
                 }
                 for(let i = 0; i < checkSize; i++) {
                     if(gameWon) break;
                     if(checkRow(i)) {
                         activePlayer.setWinnerState(true);
                         gameWon = true;
+                        displayController.winnerCells("row", i);
                         break;
                     } else if(checkCol(i)) {
                         activePlayer.setWinnerState(true);
                         gameWon = true;
+                        displayController.winnerCells("col", i);
                         break;
                     }
                 }
@@ -193,8 +208,6 @@ const gameController = (() => {
         activePlayer = playerOne;
         gameBoard.resetBoard();
     };
-
-    //newRound();
 
     return { playRound, resetGame, getActivePlayer, playerOne, playerTwo, newRound };
 })();
@@ -251,12 +264,28 @@ const displayController = (() => {
         while(boardCells[0]) {
             boardCells[0].remove();
         }
-        /*const board = document.getElementById("board");
-        board.forEach((row, rowIndex) => {
-            row.forEach((cell, cellIndex) => {
-                board.removeChild(board.firstChild);
-            })
-        })*/
+    };
+
+    const winnerCells = (lineType, lineNumber) => {
+        if(lineType === "diag") {
+            if(lineNumber === 1) {
+                for(let i = 0; i < gameBoard.getBoardSize(); i++) {
+                    boardCells[i * gameBoard.getBoardSize() + i].firstElementChild.classList.add("winner-cell");
+                }
+            } else if(lineNumber === 2) {
+                for(let i = 0; i < gameBoard.getBoardSize(); i++) {
+                    boardCells[i * gameBoard.getBoardSize() + gameBoard.getBoardSize()-i-1].firstElementChild.classList.add("winner-cell");
+                }
+            }
+        } else if(lineType === "row") {
+            for(let j = 0; j < gameBoard.getBoardSize(); j++) {
+                boardCells[lineNumber * gameBoard.getBoardSize() + j].firstElementChild.classList.add("winner-cell");
+            }
+        } else if(lineType === "col") {
+            for(let i = 0; i < gameBoard.getBoardSize(); i++) {
+                boardCells[i * gameBoard.getBoardSize() + lineNumber].firstElementChild.classList.add("winner-cell");
+            }
+        }
     };
 
     const setLiveMessage = (msg) => liveMessage.innerText = msg;
@@ -266,8 +295,9 @@ const displayController = (() => {
         event.preventDefault();
 
         gameController.resetGame();
+        displayController.destroyBoard();
         gameController.newRound();
-        displayController.updateBoard();
+        displayController.createBoard();
         displayController.setLiveMessage(`${gameController.getActivePlayer().getName()}'s turn... [${gameController.getActivePlayer().getSign()}]`);
     });
 
@@ -281,7 +311,9 @@ const displayController = (() => {
         menu.classList.remove("hidden");
     });
 
-    return { createBoard, updateBoard, destroyBoard, setLiveMessage, getLiveMessage };
+    const getBoardCells = () => boardCells;
+
+    return { createBoard, updateBoard, destroyBoard, winnerCells, setLiveMessage, getLiveMessage, getBoardCells };
 })();
 
 const menuController = (() => {
@@ -295,8 +327,10 @@ const menuController = (() => {
     formMenu.addEventListener('submit', (event) => {
         event.preventDefault();
         
-        gameController.playerOne.setName(playerOneInput.value); 
+        gameController.playerOne.setName(playerOneInput.value);
+        playerOneInput.value = "";
         gameController.playerTwo.setName(playerTwoInput.value);
+        playerTwoInput.value = "";
         gameController.newRound();
 
         displayController.createBoard();

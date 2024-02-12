@@ -180,3 +180,11 @@ body {
 .cell[data-active-sign="O"]:hover::after {
     content: 'O';
 }
+
+.winner-cell {
+    color: rgb(29, 73, 27);
+
+    animation-name: myAnimation;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
